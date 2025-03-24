@@ -60,7 +60,7 @@ const About = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 "></div>
               <img
                 // src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
-                src="../../public/photo.jpeg"
+                src="https://res.cloudinary.com/dsc2jgrid/image/upload/v1742845366/uploads/resume%20maker/photo_ezhpev.jpg"
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
