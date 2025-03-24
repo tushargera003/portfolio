@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
+
 import { motion } from "framer-motion";
 
 const ProjectDetail = () => {
@@ -12,9 +13,7 @@ const ProjectDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/api/projects/${id}`
-        );
+        const { data } = await api.get(`/projects/${id}`);
         setProject(data);
         setLoading(false);
       } catch (error) {
