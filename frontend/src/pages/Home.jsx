@@ -89,7 +89,7 @@ const Home = () => {
             I'm a passionate developer with expertise in building full-stack
             applications using modern technologies.
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <NavLink to="/projects">
               <motion.button
                 whileHover={{ scale: 1.05 }}
