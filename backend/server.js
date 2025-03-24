@@ -89,6 +89,9 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('backend is running...');
+});
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
