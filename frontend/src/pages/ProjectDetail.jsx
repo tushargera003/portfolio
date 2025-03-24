@@ -56,14 +56,14 @@ const ProjectDetail = () => {
     );
   }
 
-  if (!project) {
+  if (loading) {
     return (
       <motion.div
-        className="text-center py-12"
+        className="flex justify-center items-center h-64"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        Project not found
+        <div className="loading loading-spinner loading-lg text-primary"></div>
       </motion.div>
     );
   }

@@ -9,10 +9,10 @@ const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const Contact = require('./models/Contact');
 const corsOptions = {
-    origin: 'https://portfolio-git-main-tushar-geras-projects.vercel.app',
+    origin: ['https://portfolio-git-main-tushar-geras-projects.vercel.app', 'http://localhost:5174'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-  };
+};
 dotenv.config();
 connectDB();
 
