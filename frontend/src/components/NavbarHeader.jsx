@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
-import { FiMoon, FiSun } from "react-icons/fi";
+import { FiMoon, FiSun, FiDownload } from "react-icons/fi";
 
 const NavbarHeader = () => {
   const { theme, toggleTheme } = useTheme();
@@ -13,6 +13,18 @@ const NavbarHeader = () => {
       : "hover:text-primary transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-base-200/50";
 
   const navItems = ["Home", "Projects", "About", "Contact"];
+
+  // Function to handle resume download
+  const handleDownloadResume = () => {
+    // Replace this path with the actual path to your resume file
+    const resumeUrl = "/resume/Tushar_Gera_Resume.pdf";
+    const link = document.createElement("a");
+    link.href = resumeUrl;
+    link.download = "Tushar_Gera_Resume.pdf"; // This will be the downloaded filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <motion.header
@@ -63,9 +75,24 @@ const NavbarHeader = () => {
                 </NavLink>
               </motion.div>
             ))}
-          </nav>
 
-          {/* Mobile menu button would go here */}
+            {/* Resume Download Button */}
+            <motion.div
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <button
+                onClick={handleDownloadResume}
+                className="flex items-center gap-2 hover:text-primary transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-base-200/50"
+              >
+                <FiDownload className="w-4 h-4" />
+                Resume
+              </button>
+            </motion.div>
+          </nav>
 
           {/* Dark Mode Toggle */}
           <motion.button
@@ -86,7 +113,7 @@ const NavbarHeader = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation (would appear below on small screens) */}
+      {/* Mobile Navigation */}
       <motion.nav
         className="md:hidden py-2 px-6"
         initial={{ opacity: 0 }}
@@ -103,6 +130,14 @@ const NavbarHeader = () => {
               {item}
             </NavLink>
           ))}
+          {/* Mobile Resume Download Button */}
+          <button
+            onClick={handleDownloadResume}
+            className="flex items-center gap-1 hover:text-primary transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-base-200/50 text-sm"
+          >
+            <FiDownload className="w-3 h-3" />
+            Resume
+          </button>
         </div>
       </motion.nav>
     </motion.header>
