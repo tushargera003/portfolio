@@ -1,29 +1,43 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
 
 const ProjectFilter = ({ projects, setFilteredProjects }) => {
-  const filterOptions = {
-    technology: [
+  const getFilterOptions = () => {
+    const technologies = [
       "All",
       ...new Set(projects.flatMap((project) => project.technologies || [])),
-    ],
-    year: [
+    ];
+
+    const years = [
       "All",
-      ...new Set(projects.map((project) => project.year || "2023")),
-    ],
+      ...new Set(
+        projects.map((project) =>
+          project.year ? project.year.toString() : "2023"
+        )
+      ),
+    ].sort((a, b) => {
+      if (a === "All") return -1;
+      if (b === "All") return 1;
+      return b.localeCompare(a); // Now safe as all are strings
+    });
+
+    return { technology: technologies, year: years };
   };
 
+  const filterOptions = getFilterOptions();
   const [filters, setFilters] = useState({
     technology: "All",
     year: "All",
   });
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newFilters = { ...filters, [name]: value };
     setFilters(newFilters);
+    setIsFiltering(true);
 
-    // Filter projects
     const filtered = projects.filter((project) => {
       const techMatch =
         newFilters.technology === "All" ||
@@ -35,64 +49,112 @@ const ProjectFilter = ({ projects, setFilteredProjects }) => {
       return techMatch && yearMatch;
     });
 
-    setFilteredProjects(filtered);
+    setTimeout(() => {
+      setFilteredProjects(filtered);
+      setIsFiltering(false);
+    }, 800);
   };
+
+  const resetFilters = () => {
+    setFilters({ technology: "All", year: "All" });
+    setFilteredProjects(projects);
+    setIsFiltering(false);
+  };
+
+  const filterStatusText =
+    filters.technology === "All" && filters.year === "All"
+      ? "Showing all projects"
+      : `Filtered by: ${[
+          filters.technology !== "All" && filters.technology,
+          filters.year !== "All" && filters.year,
+        ]
+          .filter(Boolean)
+          .join(" • ")}`;
 
   return (
     <motion.div
-      className="flex flex-col md:flex-row gap-6 mb-12 justify-center items-center"
+      className="flex flex-col items-center mb-12"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <div className="form-control w-full max-w-xs">
-        <label className="label" htmlFor="technology">
-          <span className="label-text">Technology</span>
-        </label>
-        <select
-          name="technology"
-          id="technology"
-          value={filters.technology}
-          onChange={handleChange}
-          className="select select-bordered"
+      <div className="max-w-4xl w-full bg-base-200/50 backdrop-blur-sm rounded-3xl p-6 shadow-xl">
+        <motion.h3
+          className="text-2xl font-bold mb-6 text-center"
+          whileHover={{ scale: 1.01 }}
         >
-          {filterOptions.technology.map((tech, index) => (
-            <option key={index} value={tech}>
-              {tech}
-            </option>
-          ))}
-        </select>
-      </div>
+          Filter Projects
+        </motion.h3>
 
-      <div className="form-control w-full max-w-xs">
-        <label className="label" htmlFor="year">
-          <span className="label-text">Year</span>
-        </label>
-        <select
-          name="year"
-          id="year"
-          value={filters.year}
-          onChange={handleChange}
-          className="select select-bordered"
-        >
-          {filterOptions.year.map((yr, index) => (
-            <option key={index} value={yr}>
-              {yr}
-            </option>
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+          {Object.entries(filterOptions).map(([filterName, options]) => (
+            <motion.div
+              key={filterName}
+              className="form-control w-full max-w-xs"
+              whileHover={{ y: -2 }}
+            >
+              <label className="label" htmlFor={filterName}>
+                <span className="label-text text-lg capitalize">
+                  {filterName}
+                </span>
+              </label>
+              <select
+                name={filterName}
+                id={filterName}
+                value={filters[filterName]}
+                onChange={handleChange}
+                className="select select-bordered select-lg bg-base-100"
+              >
+                {options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </motion.div>
           ))}
-        </select>
-      </div>
 
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => {
-          setFilters({ technology: "All", year: "All" });
-          setFilteredProjects(projects);
-        }}
-        className="btn btn-outline mt-8 md:mt-9"
-      >
-        Reset Filters
-      </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={resetFilters}
+            className="btn btn-outline mt-8 md:mt-9"
+          >
+            Reset Filters
+          </motion.button>
+        </div>
+
+        <div className="mt-4 text-center h-6">
+          <AnimatePresence mode="wait">
+            {isFiltering ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <TypeAnimation
+                  sequence={["Filtering ..."]}
+                  wrapper="span"
+                  cursor={false}
+                  speed={50}
+                  className="text-sm text-primary"
+                />
+              </motion.div>
+            ) : (
+              <motion.p
+                key="status"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 5 }}
+                transition={{ duration: 0.1 }}
+                className="text-sm text-gray-500"
+              >
+                {filterStatusText}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </motion.div>
   );
 };
