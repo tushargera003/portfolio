@@ -16,11 +16,10 @@ const NavbarHeader = () => {
 
   // Function to handle resume download
   const handleDownloadResume = () => {
-    // Replace this path with the actual path to your resume file
     const resumeUrl = "/resume/Tushar_Gera_Resume.pdf";
     const link = document.createElement("a");
     link.href = resumeUrl;
-    link.download = "Tushar_Gera_Resume.pdf"; // This will be the downloaded filename
+    link.download = "Tushar_Gera_Resume.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -35,7 +34,6 @@ const NavbarHeader = () => {
     >
       <div className="relative z-10 container mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between">
         {/* Logo */}
-
         <motion.div className="flex items-center" whileHover={{ scale: 1.02 }}>
           <motion.h1
             className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
@@ -57,7 +55,7 @@ const NavbarHeader = () => {
 
         <div className="flex items-center gap-4">
           {/* Navigation */}
-          <nav className="hidden md:flex gap-1">
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item, index) => (
               <motion.div
                 key={item}
@@ -76,13 +74,14 @@ const NavbarHeader = () => {
               </motion.div>
             ))}
 
-            {/* Resume Download Button */}
+            {/* Resume Download Button - Fixed alignment */}
             <motion.div
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.6 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              className="flex items-center" // Added this to ensure proper alignment
             >
               <button
                 onClick={handleDownloadResume}
@@ -120,7 +119,7 @@ const NavbarHeader = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
       >
-        <div className="flex justify-around">
+        <div className="flex justify-around items-center">
           {navItems.map((item) => (
             <NavLink
               key={item}
