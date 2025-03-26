@@ -15,6 +15,12 @@ const About = () => {
     { name: "Framer Motion", level: 70 },
   ];
 
+  // Conditionally set overlay classes based on the theme
+  const overlayClasses =
+    theme === "synthwave"
+      ? "absolute inset-0 bg-gradient-to-br from-black/40 to-black/40"
+      : "absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10";
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -57,9 +63,9 @@ const About = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="relative h-64 w-64 mx-auto mb-8 rounded-full overflow-hidden border-4 border-primary/20">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 "></div>
+              {/* Conditionally render overlay with adjusted styles for synthwave */}
+              <div className={overlayClasses}></div>
               <img
-                // src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
                 src="https://res.cloudinary.com/dsc2jgrid/image/upload/v1742845366/uploads/resume%20maker/photo_ezhpev.jpg"
                 alt="Profile"
                 className="w-full h-full object-cover"
@@ -136,7 +142,6 @@ const About = () => {
                     MongoDB, honing my ability to create efficient and scalable
                     solutions.
                   </h3>
-                  {/* <p className="text-sm opacity-80">2020 - Present</p> */}
                 </div>
                 <div>
                   <h3 className="font-semibold">
