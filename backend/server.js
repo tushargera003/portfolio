@@ -50,39 +50,59 @@ app.post('/api/contact', async (req, res) => {
     const newContact = new Contact({ name, email, message });
     await newContact.save();
 
-    // Admin notification email (to you)
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.YOUR_EMAIL, // Your email
-      subject: 'New Contact Form Submission',
-      html: `
-        <h2 style="color: #2c3e50;">New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p style="background: #f8f9fa; padding: 10px; border-radius: 5px;">${message.replace(/\n/g, '<br>')}</p>
-        <hr>
-        <p style="color: #7f8c8d;">This email was automatically generated.</p>
-      `
-    };
+   // Admin notification email (to you)
+const adminMailOptions = {
+  from: process.env.EMAIL_USER,
+  to: process.env.YOUR_EMAIL, // Your email
+  subject: 'New Contact Form Submission',
+  text: `New Contact Form Submission
 
-    // User acknowledgment email
-    const userMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email, // Sending email to the user
-      subject: 'Thank You for Contacting Us!',
-      html: `
-        <div style="font-family: Arial, sans-serif; color: #2c3e50; padding: 20px;">
-          <h2 style="color: #2980b9;">Hello ${name},</h2>
-          <p>Thank you for reaching out to us. We have received your message and our team will get back to you as soon as possible.</p>
-          <p style="background: #ecf0f1; padding: 10px; border-radius: 5px;"><strong>Your Message:</strong> ${message.replace(/\n/g, '<br>')}</p>
-          <p>We appreciate your patience and will respond to your inquiry shortly.</p>
-          <br>
-          <p>Best Regards,</p>
-          <p><strong>Tushar Gera</strong></p>
-        </div>
-      `
-    };
+Name: ${name}
+Email: ${email}
+Message:
+${message}
+
+This email was automatically generated.`,
+  html: `
+    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, '<br>')}</p>
+      <hr style="border:none; border-top:1px solid #ccc;">
+      <p style="font-size:12px; color:#777;">This email was automatically generated.</p>
+    </div>
+  `
+};
+
+// User acknowledgment email
+const userMailOptions = {
+  from: process.env.EMAIL_USER,
+  to: email, // Sending email to the user
+  subject: 'Thank You for Contacting Us!',
+  text: `Hello ${name},
+
+Thank you for reaching out to us. We have received your message and our team will get back to you as soon as possible.
+
+Your Message:
+${message}
+
+Best Regards,
+Tushar Gera`,
+  html: `
+    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+      <h2>Hello ${name},</h2>
+      <p>Thank you for reaching out. We have received your message and our team will get back to you soon.</p>
+      <p><strong>Your Message:</strong></p>
+      <p>${message.replace(/\n/g, '<br>')}</p>
+      <br>
+      <p>Best Regards,</p>
+      <p><strong>Tushar Gera</strong></p>
+    </div>
+  `
+};
+
 
     // Send both emails
     await transporter.sendMail(adminMailOptions);
