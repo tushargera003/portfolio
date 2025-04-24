@@ -85,7 +85,7 @@ const NavbarHeader = () => {
             >
               <button
                 onClick={handleDownloadResume}
-                className="flex items-center gap-2 hover:text-primary transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-base-200/50"
+                className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer duration-300 px-4 py-2 rounded-lg hover:bg-base-200/50"
               >
                 <FiDownload className="w-4 h-4" />
                 Resume
@@ -132,7 +132,7 @@ const NavbarHeader = () => {
           {/* Mobile Resume Download Button */}
           <button
             onClick={handleDownloadResume}
-            className="flex items-center gap-1 hover:text-primary transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-base-200/50 text-sm"
+            className="flex items-center gap-1 hover:text-primary cursor-pointer transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-base-200/50 text-sm"
           >
             <FiDownload className="w-3 h-3" />
             Resume
