@@ -27,7 +27,7 @@ function App() {
               <Route path="/projects/:id" element={<ProjectDetail />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/udhyog" element={<Udhyog />}/>
+              {/* <Route path="/udhyog" element={<Udhyog />}/>*/}
             </Routes>
           </main>
           <Footer />
