@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://portfolio-tushar-geras-projects.vercel.app/sitemap.xml
