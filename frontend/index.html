@@ -1,54 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="valentine">
-
 <head>
+  <!-- ✅ Basic Meta Tags -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff6f91" />
+  <meta name="color-scheme" content="light dark" />
 
-  <!-- 🔥 SEO Meta Tags -->
-  <meta name="description"
-    content="Tushar Gera - Full-Stack Developer. Passionate about building modern web applications with React, Node.js, and MongoDB. Explore my projects and connect with me!" />
-  <meta name="keywords" content="Tushar Gera, Full-Stack Developer, Web Developer, React, Node.js, Portfolio" />
+  <!-- 🔍 SEO Meta -->
+  <title>Tushar Gera | Full-Stack Developer</title>
+  <meta name="title" content="Tushar Gera | Full-Stack Developer" />
+  <meta name="description" content="Tushar Gera – MERN Stack Developer with a passion for building beautiful, performant web applications. Explore my portfolio and skills." />
+  <meta name="keywords" content="Tushar Gera, MERN Developer, Full-Stack Developer, React, Node.js, MongoDB, Portfolio, Developer India" />
   <meta name="author" content="Tushar Gera" />
   <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://portfolio-tushar-geras-projects.vercel.app/" />
 
-  <!-- 🔗 Open Graph (OG) for Social Media -->
-  <meta property="og:title" content="Tushar Gera | Full-Stack Developer" />
-  <meta property="og:description"
-    content="Explore my projects and skills in modern web development. Let's build something great together!" />
-  <meta property="og:image"
-    content="https://res.cloudinary.com/dsc2jgrid/image/upload/v1742845841/uploads/resume%20maker/android-chrome-192x192_ac9zsf.png" />
-  <meta property="og:url" content="https://portfolio-git-main-tushar-geras-projects.vercel.app/" />
+  <!-- 🖼️ Open Graph / Facebook -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://portfolio-tushar-geras-projects.vercel.app/" />
+  <meta property="og:title" content="Tushar Gera | Full-Stack Developer" />
+  <meta property="og:description" content="Explore MERN stack projects, modern UI, and connect with Tushar for collaboration or hiring." />
+  <meta property="og:image" content="https://res.cloudinary.com/dsc2jgrid/image/upload/v1742845841/uploads/resume%20maker/android-chrome-192x192_ac9zsf.png" />
 
-  <!-- 🐦 Twitter Card for Better Sharing -->
+  <!-- 🐦 Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://portfolio-tushar-geras-projects.vercel.app/" />
   <meta name="twitter:title" content="Tushar Gera | Full-Stack Developer" />
-  <meta name="twitter:description"
-    content="Passionate about React, Node.js, and modern web development. Check out my work!" />
-  <meta name="twitter:image"
-    content="https://res.cloudinary.com/dsc2jgrid/image/upload/v1742845841/uploads/resume%20maker/android-chrome-192x192_ac9zsf.png" />
+  <meta name="twitter:description" content="Modern portfolio of a MERN stack developer showcasing real-world projects and skills." />
+  <meta name="twitter:image" content="https://res.cloudinary.com/dsc2jgrid/image/upload/v1742845841/uploads/resume%20maker/android-chrome-192x192_ac9zsf.png" />
 
-  <!-- 🔥 Favicon and Icons -->
+  <!-- 📱 PWA and App Icons -->
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
 
-  <!-- 🌟 Preload Important Assets for Performance -->
-  <link rel="preload" href="/favicon.ico" as="image" />
+  <!-- ⚡️ Preload + Fonts -->
+  <link rel="preload" href="/src/main.jsx" as="script" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <!-- 🌍 Title of the Page -->
-  <title>Tushar Gera | Full-Stack Developer</title>
+  <!-- 💡 Structured Data (Optional for SEO boost) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Tushar Gera",
+  "url": "https://portfolio-tushar-geras-projects.vercel.app/",
+  "sameAs": [
+    "https://www.linkedin.com/in/tushar-gera",
+    "https://github.com/tushargera003"
+  ],
+  "jobTitle": "Full-Stack Developer",
+  "email": "mailto:tushargera006@gmail.com",
+  "telephone": "+91-7053371296",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Freelance / Open Source"
+  }
+}
+</script>
+
+
 </head>
-
 <body>
-  <div id="root"></div>
-
-  <!-- 📜 Accessibility & Performance Improvements -->
   <noscript>You need to enable JavaScript to run this app.</noscript>
-
+  <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
-
 </html>
