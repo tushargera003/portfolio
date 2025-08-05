@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: dark --prefersdark, cupcake ,halloween ,abyss , valentine --default ,synthwave;
+  themes: all;
 }
 body {
   font-family: 'Inter', sans-serif;
