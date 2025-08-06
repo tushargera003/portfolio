@@ -1,40 +1,67 @@
+// CollegeTigerHomePage.jsx
 import React, { useState, useEffect, useRef } from "react";
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useTransform,
   useInView,
-  AnimatePresence,
 } from "framer-motion";
 
-const CollegeTigerHomePage = () => {
-  const [currentTheme, setCurrentTheme] = useState(
-    localStorage.getItem("college-tiger-theme") || "light"
+// --- Mini utility components for icons, etc ---
+const UniIcon = ({ name }) => {
+  // Demo icons, you can replace with actual SVGs or images
+  const iconMap = {
+    "IIT Delhi": "🎓",
+    "IIM Bangalore": "📈",
+    "AIIMS Delhi": "⚕️",
+    "BITS Pilani": "🔬",
+    "SRM University": "🏛️",
+    "Amity University": "🏫",
+    IGNOU: "🌐",
+    Symbiosis: "🎯",
+  };
+  return (
+    <span aria-label={name} className="text-4xl">
+      {iconMap[name] || "🏫"}
+    </span>
   );
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    counsellingFor: "",
-    message: "",
-  });
-  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
-  const [particles, setParticles] = useState([]);
+};
 
-  const { scrollYProgress } = useScroll();
-  const heroRef = useRef(null);
-  const servicesRef = useRef(null);
-  const statsRef = useRef(null);
+const SectionTitle = ({ emoji, title, subtitle }) => (
+  <div className="text-center mb-12">
+    <motion.h2
+      className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: 0.1 }}
+    >
+      <span className="inline-block mr-2">{emoji}</span>
+      <span
+        className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent"
+        style={{ WebkitBackgroundClip: "text" }}
+      >
+        {title}
+      </span>
+    </motion.h2>
+    {subtitle && (
+      <motion.p
+        className="text-lg md:text-2xl text-base-content/70 max-w-2xl mx-auto"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        {subtitle}
+      </motion.p>
+    )}
+  </div>
+);
 
-  const isHeroInView = useInView(heroRef, { threshold: 0.3 });
-  const isServicesInView = useInView(servicesRef, { threshold: 0.2 });
-  const isStatsInView = useInView(statsRef, { threshold: 0.5 });
-
-  // Available Daisy UI themes with categories
+// --- Main Component ---
+const CollegeTigerHomePage = () => {
+  // -------------- Data --------------
   const themeCategories = {
     "Light Themes": [
       "light",
@@ -42,143 +69,44 @@ const CollegeTigerHomePage = () => {
       "bumblebee",
       "emerald",
       "corporate",
-      "retro",
       "garden",
-      "lofi",
+      "forest",
       "pastel",
       "fantasy",
       "wireframe",
       "cmyk",
       "autumn",
+      "business",
       "acid",
       "lemonade",
+      "coffee",
       "winter",
+      "dim",
+      "nord",
+      "sunset",
+      "caramellatte",
+      "silk",
     ],
     "Dark Themes": [
       "dark",
       "synthwave",
+      "retro",
       "cyberpunk",
       "valentine",
       "halloween",
-      "forest",
       "aqua",
+      "lofi",
       "black",
       "luxury",
       "dracula",
-      "business",
       "night",
-      "coffee",
-      "dim",
-      "nord",
-      "sunset",
+      "abyss",
     ],
   };
-
   const allThemes = [
     ...themeCategories["Light Themes"],
     ...themeCategories["Dark Themes"],
   ];
-
-  // Enhanced stats with animations
-  const stats = [
-    {
-      number: "100+",
-      label: "Corporate Partners",
-      icon: "🏢",
-      color: "text-primary",
-    },
-    {
-      number: "30+",
-      label: "Academic Partners",
-      icon: "🎓",
-      color: "text-secondary",
-    },
-    {
-      number: "15K+",
-      label: "Students Guided",
-      icon: "👨‍🎓",
-      color: "text-accent",
-    },
-    { number: "98%", label: "Success Rate", icon: "⭐", color: "text-success" },
-  ];
-
-  // Enhanced services with more details
-  const services = [
-    {
-      icon: "🎯",
-      title: "AI-Powered Career Counseling",
-      description:
-        "Advanced AI algorithms analyze your strengths, interests, and market trends to provide personalized career guidance.",
-      features: [
-        "Personality Assessment",
-        "Skill Gap Analysis",
-        "Market Trend Insights",
-      ],
-      color: "from-blue-500 to-purple-600",
-    },
-    {
-      icon: "🏛️",
-      title: "Smart University Matching",
-      description:
-        "Our intelligent matching system finds universities that perfectly align with your academic profile and career goals.",
-      features: [
-        "Global University Database",
-        "Admission Probability",
-        "Scholarship Opportunities",
-      ],
-      color: "from-green-500 to-teal-600",
-    },
-    {
-      icon: "📊",
-      title: "Program Analytics",
-      description:
-        "Deep insights into program outcomes, employment rates, and salary projections to make informed decisions.",
-      features: [
-        "ROI Analysis",
-        "Employment Statistics",
-        "Industry Connections",
-      ],
-      color: "from-orange-500 to-red-600",
-    },
-    {
-      icon: "🚀",
-      title: "Career Acceleration",
-      description:
-        "End-to-end career support including internships, job placements, and professional networking opportunities.",
-      features: ["Industry Mentorship", "Job Placement", "Skill Development"],
-      color: "from-purple-500 to-pink-600",
-    },
-  ];
-
-  // Testimonials
-  const testimonials = [
-    {
-      name: "Priya Sharma",
-      role: "Software Engineer at Google",
-      image: "👩‍💼",
-      quote:
-        "College Tiger's AI-powered counseling helped me discover my passion for technology. Today, I'm living my dream at Google!",
-      rating: 5,
-    },
-    {
-      name: "Rahul Gupta",
-      role: "MBA Graduate, IIM Bangalore",
-      image: "👨‍💼",
-      quote:
-        "The personalized guidance and university matching was spot-on. I got into my dream B-school with a scholarship!",
-      rating: 5,
-    },
-    {
-      name: "Ananya Patel",
-      role: "Medical Student, AIIMS",
-      image: "👩‍⚕️",
-      quote:
-        "From career confusion to medical school - College Tiger made my journey smooth and successful.",
-      rating: 5,
-    },
-  ];
-
-  // Programs offered
   const programs = [
     {
       name: "Online MBA",
@@ -208,67 +136,265 @@ const CollegeTigerHomePage = () => {
       rating: 4.5,
       students: "6000+",
     },
+    {
+      name: "Online BBA",
+      duration: "3 Years",
+      price: "₹1,10,000",
+      rating: 4.7,
+      students: "3500+",
+    },
+    {
+      name: "Online BA",
+      duration: "3 Years",
+      price: "₹70,000",
+      rating: 4.4,
+      students: "4200+",
+    },
+  ];
+  const universities = [
+    {
+      name: "IIT Delhi",
+      city: "Delhi",
+      rating: 5,
+      programs: ["B.Tech", "M.Tech", "PhD"],
+      logo: null,
+      desc: "India's premier technology institute.",
+    },
+    {
+      name: "IIM Bangalore",
+      city: "Bangalore",
+      rating: 5,
+      programs: ["MBA", "PGDM"],
+      logo: null,
+      desc: "Top-tier management education.",
+    },
+    {
+      name: "AIIMS Delhi",
+      city: "Delhi",
+      rating: 5,
+      programs: ["MBBS", "MD"],
+      logo: null,
+      desc: "Best for medical studies.",
+    },
+    {
+      name: "BITS Pilani",
+      city: "Pilani",
+      rating: 4.8,
+      programs: ["B.E.", "M.E.", "PhD"],
+      logo: null,
+      desc: "Renowned for innovation.",
+    },
+    {
+      name: "SRM University",
+      city: "Chennai",
+      rating: 4.7,
+      programs: ["B.Tech", "MBA"],
+      logo: null,
+      desc: "Multi-disciplinary excellence.",
+    },
+    {
+      name: "Amity University",
+      city: "Noida",
+      rating: 4.5,
+      programs: ["BBA", "MBA", "BCA"],
+      logo: null,
+      desc: "Global education leader.",
+    },
+    {
+      name: "IGNOU",
+      city: "Delhi",
+      rating: 4.3,
+      programs: ["Distance UG/PG"],
+      logo: null,
+      desc: "Largest open university.",
+    },
+    {
+      name: "Symbiosis",
+      city: "Pune",
+      rating: 4.6,
+      programs: ["MBA", "Law"],
+      logo: null,
+      desc: "Known for diversity.",
+    },
+  ];
+  const services = [
+    {
+      icon: "🤖",
+      title: "AI Career Counseling",
+      description:
+        "Discover your best-fit career path using advanced AI assessments tailored to your strengths, interests, and aspirations.",
+      features: ["Personality Match", "Skill Gap Analysis", "Trend Insights"],
+      color: "from-blue-500 to-purple-600",
+    },
+    {
+      icon: "🏫",
+      title: "Smart University Match",
+      description:
+        "Find the right university in seconds! Compare rankings, scholarships, and your chances with our AI-powered platform.",
+      features: ["Global Database", "Scholarships", "Real-time Filters"],
+      color: "from-green-500 to-teal-400",
+    },
+    {
+      icon: "📈",
+      title: "Program Analytics",
+      description:
+        "Get data on outcomes, salaries, and placement rates for every program before you enroll. Make data-driven decisions.",
+      features: ["ROI Analysis", "Placement Stats", "Industry Connects"],
+      color: "from-orange-500 to-pink-600",
+    },
+    {
+      icon: "🚀",
+      title: "Career Acceleration",
+      description:
+        "Internships, job placements, and mentorships: everything you need to launch your dream career.",
+      features: ["Mentorship", "Job Placement", "Skill Development"],
+      color: "from-indigo-500 to-fuchsia-600",
+    },
+  ];
+  const testimonials = [
+    {
+      name: "Priya Sharma",
+      role: "Software Engineer at Google",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+      quote:
+        "College Tiger's AI-powered counseling helped me discover my passion for technology. Today, I'm living my dream at Google!",
+      rating: 5,
+    },
+    {
+      name: "Rahul Gupta",
+      role: "MBA Graduate, IIM Bangalore",
+      avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+      quote:
+        "The personalized guidance and university matching was spot-on. I got into my dream B-school with a scholarship!",
+      rating: 5,
+    },
+    {
+      name: "Ananya Patel",
+      role: "Medical Student, AIIMS",
+      avatar: "https://randomuser.me/api/portraits/women/47.jpg",
+      quote:
+        "From career confusion to medical school - College Tiger made my journey smooth and successful.",
+      rating: 5,
+    },
+    {
+      name: "Aditya Singh",
+      role: "Data Scientist at Flipkart",
+      avatar: "https://randomuser.me/api/portraits/men/46.jpg",
+      quote:
+        "The program analytics gave me confidence to pursue Data Science. Excellent support throughout.",
+      rating: 5,
+    },
+  ];
+  const stats = [
+    {
+      number: "100+",
+      label: "Corporate Partners",
+      icon: "🏢",
+      color: "text-primary",
+    },
+    {
+      number: "30+",
+      label: "Academic Partners",
+      icon: "🎓",
+      color: "text-secondary",
+    },
+    {
+      number: "15K+",
+      label: "Students Guided",
+      icon: "👨‍🎓",
+      color: "text-accent",
+    },
+    { number: "98%", label: "Success Rate", icon: "⭐", color: "text-success" },
+  ];
+  const social = [
+    { icon: "📘", label: "Facebook", href: "#" },
+    { icon: "🐦", label: "Twitter", href: "#" },
+    { icon: "💼", label: "LinkedIn", href: "#" },
+    { icon: "📸", label: "Instagram", href: "#" },
+    { icon: "📺", label: "YouTube", href: "#" },
   ];
 
-  // Initialize particles effect
-  useEffect(() => {
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: Math.random() * 3 + 1,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-    }));
-    setParticles(newParticles);
-  }, []);
+  // -------------- State & Hooks --------------
+  const [currentTheme, setCurrentTheme] = useState(
+    localStorage.getItem("collegetiger-theme") || "light"
+  );
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [uniFilter, setUniFilter] = useState(""); // University search/filter
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    counsellingFor: "",
+    message: "",
+  });
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
-  // Scroll effects
+  const heroRef = useRef(null);
+  const servicesRef = useRef(null);
+  const programsRef = useRef(null);
+  const universitiesRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const contactRef = useRef(null);
+
+  // Framer hooks
+  const { scrollYProgress } = useScroll();
+  const isHeroInView = useInView(heroRef, { threshold: 0.3 });
+  const isStatsInView = useInView(heroRef, { threshold: 0.5 });
+
+  // -------------- Effects --------------
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    localStorage.setItem("collegetiger-theme", currentTheme);
+  }, [currentTheme]);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-
-      // Update active section
-      const sections = ["home", "services", "about", "programs", "contact"];
-      const currentSection = sections.find((section) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
+      const sectionRefs = [
+        { section: "home", ref: heroRef },
+        { section: "services", ref: servicesRef },
+        { section: "programs", ref: programsRef },
+        { section: "universities", ref: universitiesRef },
+        { section: "testimonials", ref: testimonialsRef },
+        { section: "contact", ref: contactRef },
+      ];
+      for (let i = sectionRefs.length - 1; i >= 0; i--) {
+        const { section, ref } = sectionRefs[i];
+        if (ref.current) {
+          const rect = ref.current.getBoundingClientRect();
+          if (rect.top <= 80) {
+            setActiveSection(section);
+            break;
+          }
         }
-        return false;
-      });
-      if (currentSection) setActiveSection(currentSection);
+      }
     };
-
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Theme management
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    localStorage.setItem("college-tiger-theme", currentTheme);
-  }, [currentTheme]);
-
-  // Auto-rotate testimonials
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  // Form handlers
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // -------------- Handlers --------------
+
+  const handleThemeChange = (theme) => setCurrentTheme(theme);
+
+  const handleFormChange = (e) =>
+    setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsFormSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((r) => setTimeout(r, 1800));
     setIsFormSubmitting(false);
     setFormData({
       name: "",
@@ -277,96 +403,53 @@ const CollegeTigerHomePage = () => {
       counsellingFor: "",
       message: "",
     });
-    // Show success toast
     alert("Thank you! We'll contact you soon.");
   };
 
-  const handleThemeChange = (theme) => {
-    setCurrentTheme(theme);
+  // -------------- Animations --------------
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
   };
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1 },
-  };
-
+  const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1 } };
   const floatingAnimation = {
     y: [-10, 10, -10],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
+    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
   };
 
+  // -------------- UI --------------
   return (
-    <div className="min-h-screen bg-base-100 relative overflow-x-hidden">
-      {/* Animated Background Particles */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full bg-primary/10"
-            style={{
-              width: particle.size,
-              height: particle.size,
-              left: particle.x,
-              top: particle.y,
-            }}
-            animate={{
-              x: [0, particle.speedX * 100, 0],
-              y: [0, particle.speedY * 100, 0],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
-
+    <div className="min-h-screen bg-base-100 text-base-content relative overflow-x-hidden selection:bg-secondary selection:text-secondary-content">
       {/* Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-[99]"
         style={{ scaleX: scrollYProgress, transformOrigin: "0%" }}
       />
 
-      {/* Enhanced Header */}
+      {/* Header/Nav */}
       <motion.header
-        className={`navbar sticky top-0 z-40 transition-all duration-300 ${
+        className={`navbar sticky top-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-base-100/90 backdrop-blur-lg shadow-2xl border-b border-base-300"
+            ? "bg-base-100/95 backdrop-blur-xl shadow-xl border-b border-base-300"
             : "bg-transparent"
         }`}
-        initial={{ y: -100 }}
+        initial={{ y: -80 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
         <div className="navbar-start">
+          {/* Mobile menu */}
           <div className="dropdown lg:hidden">
-            <motion.div
+            <label
               tabIndex={0}
-              role="button"
               className="btn btn-ghost"
-              whileTap={{ scale: 0.95 }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <motion.svg
+              <svg
                 className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                animate={isMenuOpen ? { rotate: 45 } : { rotate: 0 }}
               >
                 <path
                   strokeLinecap="round"
@@ -378,107 +461,110 @@ const CollegeTigerHomePage = () => {
                       : "M4 6h16M4 12h16M4 18h16"
                   }
                 />
-              </motion.svg>
-            </motion.div>
+              </svg>
+            </label>
             <AnimatePresence>
               {isMenuOpen && (
                 <motion.ul
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow-2xl bg-base-100 rounded-2xl w-64 border border-base-300"
+                  className="menu menu-sm dropdown-content mt-3 z-[100] p-4 shadow-2xl bg-base-100 rounded-2xl w-64 border border-base-300"
                 >
-                  {["Home", "Services", "About", "Programs", "Contact"].map(
-                    (item) => (
-                      <motion.li key={item} whileHover={{ x: 10 }}>
-                        <a
-                          href={`#${item.toLowerCase()}`}
-                          className={`text-lg py-3 rounded-xl ${
-                            activeSection === item.toLowerCase()
-                              ? "bg-primary text-primary-content"
-                              : ""
-                          }`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {item}
-                        </a>
-                      </motion.li>
-                    )
-                  )}
+                  {[
+                    { id: "home", label: "Home" },
+                    { id: "services", label: "Services" },
+                    { id: "programs", label: "Programs" },
+                    { id: "universities", label: "Universities" },
+                    { id: "testimonials", label: "Testimonials" },
+                    { id: "contact", label: "Contact" },
+                  ].map(({ id, label }) => (
+                    <li key={id}>
+                      <a
+                        href={`#${id}`}
+                        className={`text-lg py-3 rounded-xl ${
+                          activeSection === id
+                            ? "bg-primary text-primary-content"
+                            : ""
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {label}
+                      </a>
+                    </li>
+                  ))}
                 </motion.ul>
               )}
             </AnimatePresence>
           </div>
-          <motion.a
+          {/* Logo */}
+          <a
             href="#home"
-            className="btn btn-ghost text-2xl font-bold text-primary"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="btn btn-ghost text-2xl font-extrabold text-primary flex items-center gap-2"
           >
             <motion.span animate={floatingAnimation}>🐅</motion.span>
-            <span className="ml-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               College Tiger
             </span>
-          </motion.a>
+          </a>
         </div>
-
+        {/* Nav Center */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
-            {["Home", "Services", "About", "Programs", "Contact"].map(
-              (item) => (
-                <motion.li key={item} whileHover={{ y: -2 }}>
-                  <a
-                    href={`#${item.toLowerCase()}`}
-                    className={`text-lg font-medium transition-all duration-300 hover:text-primary relative ${
-                      activeSection === item.toLowerCase() ? "text-primary" : ""
-                    }`}
-                  >
-                    {item}
-                    {activeSection === item.toLowerCase() && (
-                      <motion.div
-                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
-                        layoutId="activeSection"
-                      />
-                    )}
-                  </a>
-                </motion.li>
-              )
-            )}
+            {[
+              { id: "home", label: "Home" },
+              { id: "services", label: "Services" },
+              { id: "programs", label: "Programs" },
+              { id: "universities", label: "Universities" },
+              { id: "testimonials", label: "Testimonials" },
+              { id: "contact", label: "Contact" },
+            ].map(({ id, label }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className={`text-lg font-medium transition-all hover:text-primary ${
+                    activeSection === id ? "text-primary font-bold" : ""
+                  }`}
+                >
+                  {label}
+                  {activeSection === id && (
+                    <motion.div
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
+                      layoutId="activeSection"
+                    />
+                  )}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
-
+        {/* Navbar End */}
         <div className="navbar-end gap-2">
-          {/* Enhanced Theme Selector */}
+          {/* Theme selector */}
           <div className="dropdown dropdown-end">
-            <motion.div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle"
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.3 }}
-            >
+            <label tabIndex={0} className="btn btn-ghost btn-circle">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
-                  d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
                   clipRule="evenodd"
+                  d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
                 />
               </svg>
-            </motion.div>
-            <div className="dropdown-content z-[1] card card-compact w-80 p-4 shadow-2xl bg-base-100 text-base-content border border-base-300 rounded-2xl">
+            </label>
+            <div className="dropdown-content z-[100] card card-compact w-80 p-4 shadow-2xl bg-base-100 text-base-content border border-base-300 rounded-2xl">
               <div className="card-body">
-                <h3 className="card-title text-lg mb-4">
-                  Choose Theme
-                  <div className="badge badge-primary">{currentTheme}</div>
+                <h3 className="card-title text-lg mb-2">
+                  Choose Theme{" "}
+                  <span className="badge badge-primary">{currentTheme}</span>
                 </h3>
-                {Object.entries(themeCategories).map(([category, themes]) => (
-                  <div key={category} className="mb-4">
-                    <h4 className="font-semibold text-sm mb-2 text-base-content/70">
-                      {category}
+                {Object.entries(themeCategories).map(([cat, arr]) => (
+                  <div key={cat} className="mb-2">
+                    <h4 className="font-semibold text-sm text-base-content/60 mb-1">
+                      {cat}
                     </h4>
                     <div className="grid grid-cols-3 gap-2">
-                      {themes.map((theme) => (
-                        <motion.button
+                      {arr.map((theme) => (
+                        <button
                           key={theme}
                           className={`btn btn-xs capitalize ${
                             currentTheme === theme
@@ -486,11 +572,9 @@ const CollegeTigerHomePage = () => {
                               : "btn-outline"
                           }`}
                           onClick={() => handleThemeChange(theme)}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
                         >
                           {theme}
-                        </motion.button>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -498,343 +582,353 @@ const CollegeTigerHomePage = () => {
               </div>
             </div>
           </div>
-
-          <motion.button
-            className="btn btn-primary btn-lg shadow-lg"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-            }}
-            whileTap={{ scale: 0.95 }}
+          <a
+            href="#contact"
+            className="btn btn-primary btn-lg shadow-lg hidden md:inline-flex"
           >
             Get Started
-          </motion.button>
+          </a>
         </div>
       </motion.header>
 
-      {/* Enhanced Hero Section */}
+      {/* Hero Section */}
       <motion.section
         id="home"
         ref={heroRef}
-        className="hero min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 relative overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        className="hero min-h-[80vh] bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 relative overflow-hidden pb-8"
+        initial="hidden"
+        animate={isHeroInView ? "visible" : "hidden"}
+        variants={fadeIn}
         transition={{ duration: 1 }}
       >
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
+        {/* Glowing background blobs */}
+        <div className="absolute inset-0 pointer-events-none z-0">
           <motion.div
-            className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{ duration: 20, repeat: Infinity }}
+            className="absolute top-16 left-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl"
+            animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 360] }}
+            transition={{ duration: 24, repeat: Infinity }}
           />
           <motion.div
-            className="absolute bottom-20 right-20 w-48 h-48 bg-secondary/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0],
-            }}
-            transition={{ duration: 25, repeat: Infinity }}
+            className="absolute bottom-24 right-12 w-64 h-64 bg-secondary/20 rounded-full blur-3xl"
+            animate={{ scale: [1.1, 0.9, 1.1], rotate: [0, 360, 0] }}
+            transition={{ duration: 22, repeat: Infinity }}
           />
         </div>
-
-        <div className="hero-content text-center z-10">
+        {/* Content */}
+        <div className="hero-content text-center z-10 max-w-4xl mx-auto">
           <motion.div
-            className="max-w-6xl"
-            variants={containerVariants}
+            className="space-y-10"
+            variants={fadeInUp}
             initial="hidden"
-            animate={isHeroInView ? "visible" : "hidden"}
+            animate="visible"
           >
-            <motion.div className="mb-12" variants={itemVariants}>
-              <motion.h1
-                className="text-6xl lg:text-8xl font-bold mb-8"
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-pulse">
-                  Welcome to
-                </span>
-                <br />
-                <motion.span
-                  className="bg-gradient-to-r from-accent via-primary to-secondary bg-clip-text text-transparent"
-                  animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  College Tiger
-                </motion.span>
-              </motion.h1>
-
-              <motion.div className="space-y-6" variants={itemVariants}>
-                <p className="text-2xl lg:text-3xl text-base-content/90 font-semibold">
-                  🚀 AI-Powered Career Guidance & Educational Excellence
-                </p>
-                <p className="text-xl text-base-content/80 max-w-4xl mx-auto leading-relaxed">
-                  Transform your future with our cutting-edge AI technology,
-                  expert counselors, and comprehensive educational ecosystem.
-                  From career discovery to dream job placement - we're your
-                  ultimate partner in success.
-                </p>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
-              variants={itemVariants}
+            <motion.h1
+              className="text-5xl md:text-7xl font-extrabold mb-4"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
             >
-              <motion.button
+              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-gradient-x">
+                Welcome to
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-accent via-primary to-secondary bg-clip-text text-transparent">
+                College Tiger
+              </span>
+            </motion.h1>
+            <p className="text-2xl md:text-3xl text-base-content/90 font-semibold">
+              🚀 AI-Powered Career Guidance & Educational Excellence
+            </p>
+            <p className="text-lg md:text-xl text-base-content/80 max-w-3xl mx-auto leading-relaxed">
+              Transform your future with our cutting-edge AI, expert counselors,
+              and the best educational ecosystem.
+              <br /> From career discovery to your dream job — we're your
+              ultimate partner in success.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.a
+                href="#contact"
                 className="btn btn-primary btn-lg text-xl px-8 py-4 shadow-2xl"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.06, y: -2 }}
+                whileTap={{ scale: 0.96 }}
               >
                 🎯 Start Free AI Assessment
-              </motion.button>
-              <motion.button
+              </motion.a>
+              <motion.a
+                href="#universities"
                 className="btn btn-outline btn-lg text-xl px-8 py-4 shadow-xl"
                 whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.96 }}
               >
                 🏛️ Explore Universities
-              </motion.button>
-            </motion.div>
-
-            {/* Enhanced Stats */}
-            <motion.div
-              ref={statsRef}
-              className="stats stats-vertical lg:stats-horizontal shadow-2xl bg-base-100/80 backdrop-blur-lg border border-base-300 rounded-3xl"
-              variants={containerVariants}
-            >
-              {stats.map((stat, index) => (
+              </motion.a>
+            </div>
+            {/* Stats */}
+            <div className="stats stats-vertical md:stats-horizontal shadow-2xl bg-base-100/90 backdrop-blur-lg border border-base-300 rounded-3xl mx-auto mt-10 p-2 md:p-4 overflow-hidden">
+              {stats.map((stat, i) => (
                 <motion.div
-                  key={index}
-                  className="stat text-center py-8"
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
+                  key={i}
+                  className="stat text-center py-7 md:py-4 overflow-hidden"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={
+                    isStatsInView
+                      ? { scale: 1, opacity: 1 }
+                      : { scale: 0.8, opacity: 0 }
+                  }
+                  transition={{ duration: 0.4, delay: i * 0.08 }}
+                  whileHover={{ scale: 1.08 }}
                 >
-                  <div className="text-6xl mb-2">{stat.icon}</div>
-                  <motion.div
-                    className={`stat-value text-4xl lg:text-5xl font-bold ${stat.color}`}
-                    initial={{ scale: 0 }}
-                    animate={isStatsInView ? { scale: 1 } : { scale: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  <div className="text-5xl mb-1">{stat.icon}</div>
+                  <div
+                    className={`stat-value text-3xl md:text-4xl font-extrabold ${stat.color}`}
                   >
                     {stat.number}
-                  </motion.div>
-                  <div className="stat-desc text-lg font-semibold text-base-content/80">
+                  </div>
+                  <div className="stat-desc text-lg font-semibold text-base-content/70">
                     {stat.label}
                   </div>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </motion.section>
 
-      {/* Enhanced Services Section */}
-      <motion.section
-        id="services"
-        ref={servicesRef}
-        className="py-32 bg-base-200 relative"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
+      {/* Services Section */}
+      <section id="services" ref={servicesRef} className="py-24 bg-base-200">
+        <SectionTitle
+          emoji="🌟"
+          title="Our AI-Powered Services"
+          subtitle="Experience the future of education and career guidance"
+        />
         <div className="container mx-auto px-4">
-          <motion.div
-            className="text-center mb-20"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-5xl lg:text-6xl font-bold text-base-content mb-6">
-              🌟 Revolutionary Services
-            </h2>
-            <p className="text-2xl text-base-content/70 max-w-4xl mx-auto">
-              Experience the future of education with our AI-powered platform
-              and expert guidance
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-12"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {services.map((service, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {services.map((service, i) => (
               <motion.div
-                key={index}
-                className="card bg-base-100 shadow-2xl hover:shadow-3xl transition-all duration-500 border border-base-300 rounded-3xl overflow-hidden group"
-                variants={itemVariants}
-                whileHover={{ y: -10, scale: 1.02 }}
+                key={i}
+                className="card bg-base-100 shadow-2xl border border-base-300 rounded-3xl group overflow-hidden hover:scale-[1.025] transition-transform duration-300"
+                whileHover={{
+                  y: -8,
+                  scale: 1.03,
+                  boxShadow: "0 8px 32px rgb(0 0 0 / 0.12)",
+                }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
               >
                 <div className={`h-2 bg-gradient-to-r ${service.color}`} />
                 <div className="card-body p-8">
-                  <div className="text-8xl mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="text-7xl mb-4 group-hover:scale-110 transition-transform">
                     {service.icon}
                   </div>
-                  <h3 className="card-title text-2xl mb-4 text-base-content">
-                    {service.title}
-                  </h3>
-                  <p className="text-base-content/70 text-lg leading-relaxed mb-6">
+                  <h3 className="card-title text-2xl mb-2">{service.title}</h3>
+                  <p className="text-lg text-base-content/70 mb-4">
                     {service.description}
                   </p>
-                  <div className="space-y-2 mb-6">
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                        <span className="text-base-content/80">{feature}</span>
-                      </div>
+                  <ul className="mb-4">
+                    {service.features.map((f, j) => (
+                      <li
+                        key={j}
+                        className="flex items-center gap-2 text-base-content/80"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-primary" /> {f}
+                      </li>
                     ))}
-                  </div>
-                  <motion.button
-                    className="btn btn-primary btn-lg w-full"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </ul>
+                  <button className="btn btn-primary btn-lg w-full">
                     Learn More
-                  </motion.button>
+                  </button>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Programs Section */}
-      <motion.section
-        id="programs"
-        className="py-32 bg-base-100"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
+      <section id="programs" ref={programsRef} className="py-24 bg-base-100">
+        <SectionTitle
+          emoji="🎓"
+          title="Popular Programs"
+          subtitle="Choose from our carefully curated online programs for career success"
+        />
         <div className="container mx-auto px-4">
-          <motion.div
-            className="text-center mb-20"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-5xl lg:text-6xl font-bold text-base-content mb-6">
-              🎓 Popular Programs
-            </h2>
-            <p className="text-2xl text-base-content/70 max-w-4xl mx-auto">
-              Choose from our carefully curated online programs designed for
-              career success
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {programs.map((program, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {programs.map((program, i) => (
               <motion.div
-                key={index}
-                className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300 rounded-2xl"
-                variants={itemVariants}
-                whileHover={{ y: -5, scale: 1.02 }}
+                key={i}
+                className="card bg-base-200 shadow-xl hover:shadow-2xl border border-base-300 rounded-2xl"
+                whileHover={{ y: -5, scale: 1.04 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
               >
                 <div className="card-body p-6">
-                  <h3 className="card-title text-xl mb-3">{program.name}</h3>
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between">
-                      <span className="text-base-content/70">Duration:</span>
-                      <span className="font-semibold">{program.duration}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-base-content/70">Price:</span>
-                      <span className="font-semibold text-primary">
-                        {program.price}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-base-content/70">Students:</span>
-                      <span className="font-semibold">{program.students}</span>
-                    </div>
+                  <h3 className="card-title text-xl mb-2">{program.name}</h3>
+                  <div className="flex justify-between text-base-content/70 mb-2">
+                    <span>Duration:</span>
+                    <span className="font-semibold">{program.duration}</span>
                   </div>
-                  <div className="rating rating-sm mb-4">
-                    {[...Array(5)].map((_, i) => (
+                  <div className="flex justify-between text-base-content/70 mb-2">
+                    <span>Price:</span>
+                    <span className="font-semibold text-primary">
+                      {program.price}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-base-content/70 mb-2">
+                    <span>Students:</span>
+                    <span className="font-semibold">{program.students}</span>
+                  </div>
+                  <div className="rating rating-sm mb-2">
+                    {[...Array(5)].map((_, i2) => (
                       <input
-                        key={i}
+                        key={i2}
                         type="radio"
                         className={`mask mask-star-2 ${
-                          i < Math.floor(program.rating)
+                          i2 < Math.floor(program.rating)
                             ? "bg-orange-400"
                             : "bg-gray-300"
                         }`}
                         disabled
+                        checked={i2 + 1 === Math.round(program.rating)}
+                        readOnly
                       />
                     ))}
-                    <span className="ml-2 text-sm font-semibold">
+                    <span className="ml-1 text-base font-semibold">
                       {program.rating}
                     </span>
                   </div>
-                  <motion.button
-                    className="btn btn-primary w-full"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Enroll Now
-                  </motion.button>
+                  <button className="btn btn-primary w-full">Enroll Now</button>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
+      </section>
+
+      {/* Universities Section */}
+      <section
+        id="universities"
+        ref={universitiesRef}
+        className="py-24 bg-base-200"
+      >
+        <SectionTitle
+          emoji="🏛️"
+          title="Top Universities"
+          subtitle="Explore India's top universities and find your perfect match"
+        />
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row gap-6 mb-10 justify-center">
+            <input
+              className="input input-bordered input-lg flex-1 w-full md:w-72"
+              type="text"
+              placeholder="Search university or city..."
+              value={uniFilter}
+              onChange={(e) => setUniFilter(e.target.value)}
+            />
+            <button
+              className="btn btn-outline"
+              onClick={() => setUniFilter("")}
+            >
+              Reset
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+            {universities
+              .filter(
+                (u) =>
+                  u.name.toLowerCase().includes(uniFilter.toLowerCase()) ||
+                  u.city.toLowerCase().includes(uniFilter.toLowerCase())
+              )
+              .map((uni, i) => (
+                <motion.div
+                  key={uni.name}
+                  className="card shadow-xl border border-base-300 bg-base-100/80 rounded-2xl hover:scale-[1.025] transition-transform"
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                >
+                  <div className="card-body p-6">
+                    <div className="flex items-center gap-2 mb-1">
+                      <UniIcon name={uni.name} />
+                      <span className="text-2xl font-bold">{uni.name}</span>
+                    </div>
+                    <div className="text-base-content/60 mb-1">{uni.city}</div>
+                    <div className="flex gap-2 items-center mb-2">
+                      <div className="rating rating-xs">
+                        {[...Array(5)].map((_, i2) => (
+                          <input
+                            key={i2}
+                            type="radio"
+                            className={`mask mask-star-2 ${
+                              i2 < uni.rating ? "bg-orange-400" : "bg-gray-300"
+                            }`}
+                            disabled
+                            checked={i2 + 1 === Math.round(uni.rating)}
+                            readOnly
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold">
+                        {uni.rating}
+                      </span>
+                    </div>
+                    <div className="mb-1 text-base-content/80">{uni.desc}</div>
+                    <div className="mb-2">
+                      <span className="font-semibold text-base-content/70">
+                        Programs:{" "}
+                      </span>
+                      <span>{uni.programs.join(", ")}</span>
+                    </div>
+                    <button className="btn btn-outline btn-sm w-full">
+                      View Details
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+          </div>
+        </div>
+      </section>
 
       {/* Testimonials Section */}
-      <motion.section
-        className="py-32 bg-base-200"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+      <section
+        id="testimonials"
+        ref={testimonialsRef}
+        className="py-24 bg-base-100"
       >
+        <SectionTitle
+          emoji="💬"
+          title="Success Stories"
+          subtitle="Hear from students who transformed their careers with College Tiger"
+        />
         <div className="container mx-auto px-4">
-          <motion.div
-            className="text-center mb-20"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-5xl lg:text-6xl font-bold text-base-content mb-6">
-              💬 Success Stories
-            </h2>
-            <p className="text-2xl text-base-content/70 max-w-4xl mx-auto">
-              Hear from students who transformed their careers with College
-              Tiger
-            </p>
-          </motion.div>
-
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-3xl mx-auto relative">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentTestimonial}
-                className="card bg-base-100 shadow-2xl rounded-3xl p-12 text-center"
-                initial={{ opacity: 0, x: 100 }}
+                className="card bg-base-200 shadow-2xl rounded-3xl p-10 text-center"
+                initial={{ opacity: 0, x: 60 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
+                exit={{ opacity: 0, x: -60 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="text-8xl mb-6">
-                  {testimonials[currentTestimonial].image}
+                <div className="flex justify-center mb-4">
+                  <img
+                    src={testimonials[currentTestimonial].avatar}
+                    alt={testimonials[currentTestimonial].name}
+                    className="rounded-full w-20 h-20 border-4 border-primary shadow-md"
+                  />
                 </div>
-                <blockquote className="text-2xl text-base-content/80 mb-6 leading-relaxed">
-                  "{testimonials[currentTestimonial].quote}"
+                <blockquote className="text-xl md:text-2xl text-base-content/80 mb-6 leading-relaxed">
+                  “{testimonials[currentTestimonial].quote}”
                 </blockquote>
-                <div className="text-xl font-bold text-base-content mb-2">
+                <div className="text-lg font-bold text-base-content mb-1">
                   {testimonials[currentTestimonial].name}
                 </div>
-                <div className="text-lg text-base-content/70 mb-4">
+                <div className="text-base-content/70 mb-2">
                   {testimonials[currentTestimonial].role}
                 </div>
                 <div className="rating">
@@ -845,259 +939,214 @@ const CollegeTigerHomePage = () => {
                       className="mask mask-star-2 bg-orange-400"
                       disabled
                       checked={i < testimonials[currentTestimonial].rating}
+                      readOnly
                     />
                   ))}
                 </div>
               </motion.div>
             </AnimatePresence>
-
             <div className="flex justify-center mt-8 gap-2">
-              {testimonials.map((_, index) => (
+              {testimonials.map((_, idx) => (
                 <button
-                  key={index}
+                  key={idx}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentTestimonial
+                    idx === currentTestimonial
                       ? "bg-primary w-8"
                       : "bg-base-300"
                   }`}
-                  onClick={() => setCurrentTestimonial(index)}
+                  aria-label={`Go to testimonial ${idx + 1}`}
+                  onClick={() => setCurrentTestimonial(idx)}
                 />
               ))}
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* Enhanced Contact Section */}
-      <motion.section
-        id="contact"
-        className="py-32 bg-base-100"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
+      {/* Contact Section */}
+      <section id="contact" ref={contactRef} className="py-24 bg-base-200">
+        <SectionTitle
+          emoji="🚀"
+          title="Start Your Journey"
+          subtitle="Ready to transform your career? Let's connect and make it happen!"
+        />
         <div className="container mx-auto px-4">
-          <motion.div
-            className="text-center mb-20"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-5xl lg:text-6xl font-bold text-base-content mb-6">
-              🚀 Start Your Journey
-            </h2>
-            <p className="text-2xl text-base-content/70 max-w-4xl mx-auto">
-              Ready to transform your career? Let's connect and make it happen!
-            </p>
-          </motion.div>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Contact Info */}
             <motion.div
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h3 className="text-4xl font-bold text-base-content mb-8">
+              <h3 className="text-3xl md:text-4xl font-bold mb-6">
                 Get Expert Guidance
               </h3>
-              <p className="text-xl text-base-content/70 mb-12 leading-relaxed">
-                Connect with our AI-powered counselors and industry experts. Get
-                personalized career guidance, university recommendations, and
-                scholarship opportunities tailored just for you.
+              <p className="text-lg md:text-xl text-base-content/70 mb-10 leading-relaxed">
+                Connect with our AI counselors and industry experts.
+                Personalized career guidance, university recommendations, and
+                scholarships — tailored for you.
               </p>
-
-              <div className="space-y-8">
-                <motion.div
-                  className="flex items-center space-x-6 p-6 bg-base-200 rounded-2xl"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="text-4xl">📧</div>
+              <div className="space-y-6">
+                <div className="flex items-center space-x-6 p-5 bg-base-100 rounded-xl shadow hover:scale-105 transition-transform">
+                  <div className="text-3xl">📧</div>
                   <div>
-                    <div className="font-semibold text-lg">Email Us</div>
-                    <div className="text-primary text-xl">
+                    <div className="font-semibold text-base">Email Us</div>
+                    <div className="text-primary text-lg">
                       advisor@collegetiger.com
                     </div>
                   </div>
-                </motion.div>
-                <motion.div
-                  className="flex items-center space-x-6 p-6 bg-base-200 rounded-2xl"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="text-4xl">📞</div>
+                </div>
+                <div className="flex items-center space-x-6 p-5 bg-base-100 rounded-xl shadow hover:scale-105 transition-transform">
+                  <div className="text-3xl">📞</div>
                   <div>
-                    <div className="font-semibold text-lg">Call Us</div>
-                    <div className="text-primary text-xl">+91 93110 33457</div>
+                    <div className="font-semibold text-base">Call Us</div>
+                    <div className="text-primary text-lg">+91 93110 33457</div>
                   </div>
-                </motion.div>
-                <motion.div
-                  className="flex items-center space-x-6 p-6 bg-base-200 rounded-2xl"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="text-4xl">⏰</div>
+                </div>
+                <div className="flex items-center space-x-6 p-5 bg-base-100 rounded-xl shadow hover:scale-105 transition-transform">
+                  <div className="text-3xl">⏰</div>
                   <div>
-                    <div className="font-semibold text-lg">Available</div>
-                    <div className="text-primary text-xl">24/7 AI Support</div>
+                    <div className="font-semibold text-base">Available</div>
+                    <div className="text-primary text-lg">24/7 AI Support</div>
                   </div>
-                </motion.div>
+                </div>
               </div>
             </motion.div>
-
+            {/* Form */}
             <motion.div
-              className="card bg-base-200 shadow-2xl rounded-3xl"
+              className="card bg-base-100 shadow-2xl rounded-3xl"
               initial={{ x: 50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
               <div className="card-body p-8 text-center">
-                <h3 className="card-title text-3xl mb-8 text-center">
+                <h3 className="card-title text-2xl mb-6">
                   🎯 Free Career Assessment
                 </h3>
-                <form onSubmit={handleFormSubmit} className="space-y-6">
-                  <motion.div
-                    className="form-control"
-                    whileFocus={{ scale: 1.02 }}
+                <form onSubmit={handleFormSubmit} className="space-y-5">
+                  <input
+                    type="text"
+                    name="name"
+                    className="input input-bordered input-lg w-full"
+                    placeholder="Your Full Name"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    required
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    className="input input-bordered input-lg w-full"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
+                  />
+                  <input
+                    type="tel"
+                    name="phone"
+                    className="input input-bordered input-lg w-full"
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={handleFormChange}
+                    required
+                  />
+                  <select
+                    name="counsellingFor"
+                    className="select select-bordered select-lg w-full"
+                    value={formData.counsellingFor}
+                    onChange={handleFormChange}
+                    required
                   >
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Your Full Name"
-                      className="input input-bordered input-lg text-lg"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </motion.div>
-                  <motion.div
-                    className="form-control"
-                    whileFocus={{ scale: 1.02 }}
-                  >
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email Address"
-                      className="input input-bordered input-lg text-lg"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </motion.div>
-                  <motion.div
-                    className="form-control"
-                    whileFocus={{ scale: 1.02 }}
-                  >
-                    <input
-                      type="tel"
-                      name="phone"
-                      placeholder="Phone Number"
-                      className="input input-bordered input-lg text-lg"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </motion.div>
-                  <motion.div
-                    className="form-control"
-                    whileFocus={{ scale: 1.02 }}
-                  >
-                    <select
-                      name="counsellingFor"
-                      className="select select-bordered select-lg text-lg"
-                      value={formData.counsellingFor}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="">I need guidance for...</option>
-                      <option>Career Counselling</option>
-                      <option>University Selection</option>
-                      <option>Program Guidance</option>
-                      <option>Scholarship Information</option>
-                      <option>Job Placement</option>
-                    </select>
-                  </motion.div>
-                  <motion.div
-                    className="form-control"
-                    whileFocus={{ scale: 1.02 }}
-                  >
-                    <textarea
-                      name="message"
-                      placeholder="Tell us about your goals and aspirations..."
-                      className="textarea textarea-bordered textarea-lg text-lg h-32"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                    />
-                  </motion.div>
-                  <motion.button
+                    <option value="">I need guidance for...</option>
+                    <option>Career Counselling</option>
+                    <option>University Selection</option>
+                    <option>Program Guidance</option>
+                    <option>Scholarship Information</option>
+                    <option>Job Placement</option>
+                  </select>
+                  <textarea
+                    name="message"
+                    className="textarea textarea-bordered textarea-lg w-full h-24"
+                    placeholder="Tell us about your goals and aspirations..."
+                    value={formData.message}
+                    onChange={handleFormChange}
+                  />
+                  <button
                     type="submit"
                     className={`btn btn-primary btn-lg w-full text-xl ${
                       isFormSubmitting ? "loading" : ""
                     }`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     disabled={isFormSubmitting}
                   >
                     {isFormSubmitting ? "Submitting..." : "🚀 Start My Journey"}
-                  </motion.button>
+                  </button>
                 </form>
               </div>
             </motion.div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* Enhanced Footer */}
-      <motion.footer
-        className="footer footer-center p-16 bg-base-300 text-base-content"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="max-w-4xl">
+      {/* Footer */}
+      <footer className="footer footer-center p-6 sm:p-8 md:p-12 bg-base-300 text-base-content">
+        {/* Inner container to control content width and center it */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* College Tiger logo/text with floating animation */}
           <motion.div
-            className="text-4xl font-bold text-primary mb-6"
+            className="text-3xl md:text-4xl font-bold text-primary mb-3 text-center" // Added text-center for small screens
             animate={floatingAnimation}
           >
             🐅 College Tiger
           </motion.div>
-          <p className="text-xl text-base-content/80 leading-relaxed mb-8">
+
+          {/* Descriptive text for the footer */}
+          <p className="text-base md:text-lg text-base-content/80 leading-relaxed mb-5 text-center">
             Empowering students worldwide with AI-powered career guidance and
-            educational excellence. Your success story starts here - let's make
-            it legendary!
+            educational excellence.
+            <br />
+            Your success story starts here — let's make it legendary!
           </p>
-          <div className="grid grid-flow-col gap-6 mb-8">
-            {[
-              { icon: "📘", label: "Facebook" },
-              { icon: "🐦", label: "Twitter" },
-              { icon: "💼", label: "LinkedIn" },
-              { icon: "📸", label: "Instagram" },
-              { icon: "📺", label: "YouTube" },
-            ].map((social, index) => (
+
+          {/* Social media icons grid */}
+          {/* flex flex-wrap justify-center for responsiveness, gap-4 for small, gap-6 for medium */}
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-6">
+            {social.map((s, i) => (
               <motion.a
-                key={index}
-                className="btn btn-ghost btn-circle btn-lg text-2xl"
+                key={i}
+                // btn-md for small screens, md:btn-lg for medium and larger
+                className="btn btn-ghost btn-circle btn-md md:btn-lg text-2xl"
                 whileHover={{ scale: 1.2, rotate: 360 }}
                 whileTap={{ scale: 0.9 }}
-                title={social.label}
+                title={s.label}
+                href={s.href}
+                target="_blank" // Added target="_blank" for external links
+                rel="noopener noreferrer" // Added rel for security
               >
-                {social.icon}
+                {s.icon}
               </motion.a>
             ))}
           </div>
+
+          {/* Copyright and tagline */}
           <div className="text-center">
-            <p className="text-lg mb-2">
+            {" "}
+            {/* Centered text for copyright and tagline */}
+            <p className="text-base mb-1">
               © 2025 College Tiger. All Rights Reserved.
             </p>
             <motion.p
-              className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
-              animate={{
-                backgroundPosition: ["0%", "100%", "0%"],
-              }}
+              className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+              animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
               #चलो_सही_रास्ता 🚀
             </motion.p>
           </div>
         </div>
-      </motion.footer>
+      </footer>
     </div>
   );
 };
