@@ -7,7 +7,13 @@ import {
   useTransform,
   useInView,
 } from "framer-motion";
-
+import {
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedin,
+  FaYoutube,
+} from "react-icons/fa";
 // --- Mini utility components for icons, etc ---
 const UniIcon = ({ name }) => {
   // Demo icons, you can replace with actual SVGs or images
@@ -307,11 +313,11 @@ const CollegeTigerHomePage = () => {
     { number: "98%", label: "Success Rate", icon: "⭐", color: "text-success" },
   ];
   const social = [
-    { icon: "📘", label: "Facebook", href: "#" },
-    { icon: "🐦", label: "Twitter", href: "#" },
-    { icon: "💼", label: "LinkedIn", href: "#" },
-    { icon: "📸", label: "Instagram", href: "#" },
-    { icon: "📺", label: "YouTube", href: "#" },
+    { icon: <FaFacebook />, label: "Facebook", href: "#" },
+    { icon: <FaTwitter />, label: "Twitter", href: "#" },
+    { icon: <FaLinkedin />, label: "LinkedIn", href: "#" },
+    { icon: <FaInstagram />, label: "Instagram", href: "#" },
+    { icon: <FaYoutube />, label: "YouTube", href: "#" },
   ];
 
   // -------------- State & Hooks --------------
@@ -428,10 +434,10 @@ const CollegeTigerHomePage = () => {
 
       {/* Header/Nav */}
       <motion.header
-        className={`navbar sticky top-0 z-50 transition-all duration-300 ${
+        className={`navbar fixed top-0 z-50 transition-all duration-300 ${
           isScrolled
             ? "bg-base-100/95 backdrop-blur-xl shadow-xl border-b border-base-300"
-            : "bg-transparent"
+            : "bg-base-100/70 backdrop-blur-lg" // Changed to fixed and added initial semi-transparent background
         }`}
         initial={{ y: -80 }}
         animate={{ y: 0 }}
@@ -615,7 +621,7 @@ const CollegeTigerHomePage = () => {
           />
         </div>
         {/* Content */}
-        <div className="hero-content text-center z-10 max-w-4xl mx-auto">
+        <div className="hero-content mt-20 text-center z-10 max-w-4xl mx-auto">
           <motion.div
             className="space-y-10"
             variants={fadeInUp}
