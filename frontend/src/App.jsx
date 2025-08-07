@@ -10,7 +10,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { AnimatePresence } from "framer-motion";
 import NavbarHeader from "./components/NavbarHeader";
 import CollegeTigerHomePage from "./pages/CollegeTigerHomePage";
-
+import CollegeXHomePage from "./pages/CollegeXHomePage";
 // Layout with Header and Footer
 const DefaultLayout = ({ children }) => (
   <>
@@ -87,6 +87,14 @@ function App() {
               element={
                 <FullPageLayout>
                   <CollegeTigerHomePage />
+                </FullPageLayout>
+              }
+            />
+            <Route
+              path="/collegeX"
+              element={
+                <FullPageLayout>
+                  <CollegeXHomePage />
                 </FullPageLayout>
               }
             />
