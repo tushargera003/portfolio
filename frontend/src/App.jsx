@@ -10,6 +10,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { AnimatePresence } from "framer-motion";
 import NavbarHeader from "./components/NavbarHeader";
 import CollegeTigerHomePage from "./pages/CollegeTigerHomePage";
+import Certifications from "./pages/Certifications";
 import CollegeXHomePage from "./pages/CollegeXHomePage";
 import DealingStreet from "./pages/DealingStreet";
 // Layout with Header and Footer
@@ -54,6 +55,14 @@ function App() {
               element={
                 <DefaultLayout>
                   <Projects />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <DefaultLayout>
+                  <Certifications />
                 </DefaultLayout>
               }
             />
