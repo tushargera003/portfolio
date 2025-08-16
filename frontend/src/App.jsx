@@ -59,7 +59,7 @@ function App() {
               }
             />
             <Route
-              path="/projects"
+              path="/certifications"
               element={
                 <DefaultLayout>
                   <Certifications />
