@@ -12,7 +12,7 @@ const NavbarHeader = () => {
       ? "font-bold text-primary bg-primary/10 px-4 py-2 rounded-lg"
       : "hover:text-primary transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-base-200/50";
 
-  const navItems = ["Home", "Projects", "About", "Contact"];
+  const navItems = ["Home", "Projects", "About", "Contact","Certifications"];
 
   // Function to handle resume download
   const handleDownloadResume = () => {
