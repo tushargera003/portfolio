@@ -13,6 +13,7 @@ import CollegeTigerHomePage from "./pages/CollegeTigerHomePage";
 import Certifications from "./pages/Certifications";
 import CollegeXHomePage from "./pages/CollegeXHomePage";
 import DealingStreet from "./pages/DealingStreet";
+import RateCalculator from "./pages/RateCalculator";
 // Layout with Header and Footer
 const DefaultLayout = ({ children }) => (
   <>
@@ -99,7 +100,18 @@ function App() {
                   <CollegeTigerHomePage />
                 </FullPageLayout>
               }
-            /><Route
+            />
+
+            <Route
+              path="/ratecalculator"
+              element={
+                <FullPageLayout>
+                  <RateCalculator />
+                </FullPageLayout>
+              }
+            />
+            
+            <Route
               path="/dealingstreet"
               element={
                 <FullPageLayout>
