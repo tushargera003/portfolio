@@ -14,6 +14,7 @@ import Certifications from "./pages/Certifications";
 import CollegeXHomePage from "./pages/CollegeXHomePage";
 import DealingStreet from "./pages/DealingStreet";
 import RateCalculator from "./pages/RateCalculator";
+import SignEase from "./pages/SignEase";
 // Layout with Header and Footer
 const DefaultLayout = ({ children }) => (
   <>
@@ -98,6 +99,15 @@ function App() {
               element={
                 <FullPageLayout>
                   <CollegeTigerHomePage />
+                </FullPageLayout>
+              }
+            />
+
+            <Route
+              path="/signease"
+              element={
+                <FullPageLayout>
+                  <SignEase />
                 </FullPageLayout>
               }
             />
