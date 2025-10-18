@@ -1,6 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Import dependencies needed in the real environment
-import { Menu, X, CheckCircle, Zap, Shield, Globe, Users, DollarSign, MapPin, Mail, Phone, Clock, FileText, ArrowUp } from 'lucide-react';
+
+// --- REACT ICONS IMPORTS (Replacing lucide-react) ---
+// Using Feather Icons (Fi) for a similar aesthetic, and some others (Fa, Md)
+import { FiMenu, FiX, FiZap, FiShield, FiGlobe, FiUsers, FiDollarSign, FiMapPin, FiMail, FiPhone, FiClock, FiFileText, FiArrowUp } from 'react-icons/fi';
+import { MdCheckCircle } from 'react-icons/md'; // Using Material Design for CheckCircle as it's common
+
+// Mapping Lucide names to React Icon components:
+const Menu = FiMenu;
+const X = FiX;
+const CheckCircle = MdCheckCircle;
+const Zap = FiZap;
+const Shield = FiShield;
+const Globe = FiGlobe;
+const Users = FiUsers;
+const DollarSign = FiDollarSign;
+const MapPin = FiMapPin;
+const Mail = FiMail;
+const Phone = FiPhone;
+const Clock = FiClock;
+const FileText = FiFileText;
+const ArrowUp = FiArrowUp;
+// ---------------------------------------------------
+
+
 // We simulate the framer-motion import and usage.
 // In a real project, you would 'npm install framer-motion'
 const motion = {
@@ -13,7 +36,13 @@ const motion = {
 // --- Configuration ---
 
 const brand = {
-  name: "SignEase by Malhotras",
+  // NOTE: React Icons generally don't take `className="w-6 h-6 ..."` like Lucide.
+  // Instead, you pass a `size` prop or let the parent container dictate the size
+  // and pass only color/styling classes. We adjust the class to `text-lg` or similar
+  // directly in the JSX or rely on default styling, but for consistency in a DaisyUI/Tailwind
+  // context, we'll keep the `w-6 h-6` wrapper if needed or rely on the icon's size prop.
+  // For this fix, we rely on the icon's size inheritance or a direct size prop if available, 
+  // but since React Icons accept `className`, we'll leave it as is and let the component handle the size.
   logo: <Shield className="w-6 h-6 inline-block mr-2 text-primary" />,
   tagline: "Empowering Secure Digital Transactions Across India",
 };
@@ -152,7 +181,7 @@ const SignEase = () => {
                 <li key={t}>
                   <a className={`capitalize ${theme === t ? 'active bg-primary text-primary-content' : ''}`} onClick={() => handleThemeChange(t)}>
                     {t}
-                    {theme === t && <CheckCircle className="w-4 h-4 ml-2" />}
+                    <CheckCircle className="w-4 h-4 ml-2" />
                   </a>
                 </li>
               ))}
@@ -518,4 +547,3 @@ const SignEase = () => {
 };
 
 export default SignEase;
-
